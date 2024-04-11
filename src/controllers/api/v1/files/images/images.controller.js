@@ -1,3 +1,5 @@
+import ImageModel from "../../../../../models/image.model.js";
+
 const readImages = (req, res) => {
     try {
         console.log('readImages works');
@@ -18,9 +20,15 @@ const readImage = (req, res) => {
     }
 };
 
-const uploadImage = (req, res) => {
+const uploadImage = async (req, res) => {
     try {
         req.file.url = `${req.protocol}://${req.hostname}:${process.env.PORT}/${req.file.path}`.replaceAll('\\', '/');
+
+        await ImageModel.create({
+            userId: req.user.id,
+            url: req.file.url,
+        });
+
         return res.status(200).json({
             message: 'image uploaded successfully',
             data: req.file,
