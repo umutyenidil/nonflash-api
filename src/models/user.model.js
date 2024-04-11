@@ -16,7 +16,13 @@ const UserSchema = mongoose.Schema(
         lastName: {
             type: mongoose.Schema.Types.String,
             required: true,
-        }
+        },
+        favorites: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Image',
+            }
+        ]
     },
 );
 
