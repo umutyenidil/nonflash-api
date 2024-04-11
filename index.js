@@ -6,6 +6,7 @@ dotenv.config();
 
 const app = express();
 
+app.use('/public',express.static('public'));
 app.use(express.json());
 
 app.use('/', routes);

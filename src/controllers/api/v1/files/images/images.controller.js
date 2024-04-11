@@ -1,4 +1,3 @@
-
 const readImages = (req, res) => {
     try {
         console.log('readImages works');
@@ -21,10 +20,10 @@ const readImage = (req, res) => {
 
 const uploadImage = (req, res) => {
     try {
-        console.log()
+        req.file.url = `${req.protocol}://${req.hostname}:${process.env.PORT}/${req.file.path}`.replaceAll('\\', '/');
         return res.status(200).json({
             message: 'image uploaded successfully',
-            data: req.file
+            data: req.file,
         });
     } catch (err) {
         return res.status(500).json({
