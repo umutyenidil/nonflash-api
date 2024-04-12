@@ -11,7 +11,7 @@ const createAccessToken = (userId) => {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: "10m",
+            expiresIn: "7d",
         }
     );
 };
@@ -28,7 +28,7 @@ const createRefreshToken = (userId, tokenId) => {
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn: "7d",
+            expiresIn: "60d",
         }
     );
 };
