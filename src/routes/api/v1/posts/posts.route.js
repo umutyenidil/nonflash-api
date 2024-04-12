@@ -5,7 +5,7 @@ import imageUploadMiddleware from "../../../../middlewares/imageUploadMiddleware
 
 const route = express.Router();
 
-route.post('/', validateAccessToken, postsController.readPosts);
+route.get('/', validateAccessToken, postsController.readPosts);
 
 route.post('/create', validateAccessToken, imageUploadMiddleware, postsController.createPost);
 

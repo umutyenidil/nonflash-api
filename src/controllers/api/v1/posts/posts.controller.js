@@ -5,10 +5,11 @@ import ImageModel from "../../../../models/image.model.js";
 
 const readPosts = async (req, res) => {
     try {
+        const data = await PostModel.find().populate(['tags', 'imageId']);
         console.log('successful');
         return res.status(200).json({
             message: "posts have fetched",
-            data: [],
+            data: data,
         });
     } catch (err) {
         console.log(err);
