@@ -8,6 +8,8 @@ route.post('/register', auth.register);
 
 route.post('/login', auth.login);
 
+route.post('/resetPassword', validateAccessToken, auth.resetPassword);
+
 route.post('/accessToken', auth.getAccessToken);
 
 route.post('/refreshToken', auth.getRefreshToken);

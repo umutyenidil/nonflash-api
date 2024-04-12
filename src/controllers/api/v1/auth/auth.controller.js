@@ -35,7 +35,7 @@ const register = async (req, res) => {
         if (user) {
             return res.status(409).json({
                 errors: {
-                    emailAddress: 'email address already in use',
+                    auth: 'email address already in use',
                 },
             });
         }
@@ -54,7 +54,7 @@ const register = async (req, res) => {
         if (!(authModelCreateResult && tokenModelCreateResult)) {
             return res.status(500).json({
                 errors: {
-                    default: 'user not created',
+                    auth: 'user not created',
                 }
             })
         }
@@ -84,25 +84,19 @@ const login = async (req, res) => {
 
         if (!data) {
             return res.status(400).json({
-                errors: {
-                    default: 'bad request',
-                },
+                message: 'bad request',
             });
         }
 
         if (data.username && data.emailAddress) {
             return res.status(400).json({
-                errors: {
-                    default: 'bad request',
-                },
+                message: 'bad request',
             });
         }
 
         if (!(data.username || data.emailAddress && data.password)) {
             return res.status(400).json({
-                errors: {
-                    default: 'bad request',
-                },
+                message: 'bad request',
             });
         }
 
@@ -116,9 +110,7 @@ const login = async (req, res) => {
 
         if (!user) {
             return res.status(404).json({
-                errors: {
-                    auth: 'user not found',
-                },
+                message: 'user not found',
             });
         }
 
@@ -146,9 +138,7 @@ const login = async (req, res) => {
 
         if (!tokenModelCreateResult) {
             return res.status(500).json({
-                errors: {
-                    default: 'an error has occured',
-                },
+                message: "internal server error"
             });
         }
 
@@ -302,10 +292,77 @@ const logout = async (req, res) => {
     }
 };
 
+const resetPassword = async (req, res) => {
+    try {
+        if (!(req.body.data && req.body.data.password && req.body.data.newPassword)) {
+            return res.status(400).json({
+                message: "bad request",
+            });
+        }
+
+        const userId = req.user.id;
+
+        const auth = await AuthModel.findById(userId);
+
+        if (!auth) {
+            return res.status(404).json({
+                message: "user not found",
+            });
+        }
+
+        const isPasswordMatched = await bcryptUtil.checkPassword({
+            hashedPassword: auth.password,
+            incomingPassword: req.body.data.password
+        });
+
+
+        if (!isPasswordMatched) {
+            return res.status(401).json({
+                errors: {
+                    password: `wrong password`,
+                },
+            });
+        }
+
+        const newPassword = await bcryptUtil.hashPassword(req.body.data.newPassword);
+
+        const result = await AuthModel.findByIdAndUpdate(userId, {
+            password:newPassword,
+        });
+
+        return res.status(200).json({
+            message: "password reset operation successful",
+        });
+        // if (!(req.body.data && req.body.data.refreshToken)) {
+        //     return res.status(400).json({
+        //         errors: {
+        //             default: "refreshToken has needed",
+        //         },
+        //     });
+        // }
+        //
+        // const decodedRefreshToken = jwtUtil.verifyRefreshToken(req.body.data.refreshToken);
+        //
+        // await TokenModel.findOneAndDelete({userId: decodedRefreshToken.user.id});
+        //
+        // return res.status(200).json({
+        //     message: "logout successful",
+        // });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            errors: {
+                default: "internal server error",
+            },
+        });
+    }
+};
+
 
 export default {
     login,
     register,
+    resetPassword,
     getAccessToken,
     getRefreshToken,
     getCurrentUser,
