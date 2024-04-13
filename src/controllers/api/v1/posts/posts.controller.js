@@ -5,11 +5,37 @@ import ImageModel from "../../../../models/image.model.js";
 
 const readPosts = async (req, res) => {
     try {
-        const data = await PostModel.find().populate(['tags', 'imageId']);
+        const data = await PostModel.find(req.query).populate(['tags', 'imageId']);
         console.log('successful');
         return res.status(200).json({
             message: "posts have fetched",
             data: data,
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            message: "internal server error",
+        });
+    }
+};
+
+const deletePost = async (req, res) => {
+    try {
+        // todo: gelen request'ler icinde istenen elemanlarin olup olmadigini kontrol edip ona gore bir bad request response gonduren bir middleware yaz
+
+        const post = PostModel.findById(req.body.data.postId);
+
+        if(!post){
+            return res.status(404).json({
+                message: "post not found",
+            });
+        }
+
+        // todo: soft delete islemine cevirilecek
+        await PostModel.findByIdAndDelete(req.body.data.postId);
+
+        return res.status(200).json({
+            message: "post has been deleted",
         });
     } catch (err) {
         console.log(err);
@@ -141,6 +167,7 @@ const createPost = async (req, res) => {
 // };
 
 export default {
+    deletePost,
     readPosts,
     createPost,
 };

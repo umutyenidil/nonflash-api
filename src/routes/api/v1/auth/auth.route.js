@@ -14,7 +14,7 @@ route.post('/accessToken', auth.getAccessToken);
 
 route.post('/refreshToken', auth.getRefreshToken);
 
-route.get('/currentUser', validateAccessToken, auth.getCurrentUser);
+route.get('/me', validateAccessToken, auth.getCurrentUser);
 
 route.post('/logout', auth.logout);
 

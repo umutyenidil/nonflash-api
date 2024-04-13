@@ -9,4 +9,6 @@ route.get('/', validateAccessToken, postsController.readPosts);
 
 route.post('/create', validateAccessToken, imageUploadMiddleware, postsController.createPost);
 
+route.post('/delete', validateAccessToken, postsController.deletePost);
+
 export default route;
