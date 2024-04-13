@@ -1,16 +1,14 @@
 import express from "express";
 import validateAccessTokenMiddleware from "../../../../../middlewares/verifyAccessToken.middleware.js";
+import favoritesController from "../../../../../controllers/api/v1/users/favorites/favorites.controller.js";
 
 const route = express.Router();
 
 
-route.get('/', validateAccessTokenMiddleware, usersController.readUsers);
+route.get('/', validateAccessTokenMiddleware, favoritesController.readFavorites);
 
+route.post('/add', validateAccessTokenMiddleware, favoritesController.addFavorite);
 
-
-route.get('/:id', validateAccessTokenMiddleware, usersController.readUser);
-
-route.post('/create', validateAccessTokenMiddleware, usersController.createUser);
 
 
 export default route;
