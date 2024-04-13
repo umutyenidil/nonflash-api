@@ -1,10 +1,20 @@
 import UserModel from "../../../../../models/user.model.js";
 
-const readFavorites = (req, res) => {
+const readAllFavorites = async (req, res) => {
     try {
+        const data = await UserModel.findOne({authId: req.user.id}).populate({
+            path: 'favorites',
+            populate: [
+                {path: 'imageId'},
+                {path: 'tags'},
+            ],
+        }).select('favorites');
+
+        console.log(data.favorites);
+
         return res.status(200).json({
             message: 'data fetched successfully',
-            data: [],
+            data: data.favorites,
         });
     } catch (err) {
         return res.status(500).json({
@@ -48,6 +58,6 @@ const addFavorite = async (req, res) => {
 };
 
 export default {
-    readFavorites,
+    readAllFavorites,
     addFavorite,
 };

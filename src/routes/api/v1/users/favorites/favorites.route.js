@@ -5,7 +5,7 @@ import favoritesController from "../../../../../controllers/api/v1/users/favorit
 const route = express.Router();
 
 
-route.get('/', validateAccessTokenMiddleware, favoritesController.readFavorites);
+route.get('/', validateAccessTokenMiddleware, favoritesController.readAllFavorites);
 
 route.post('/add', validateAccessTokenMiddleware, favoritesController.addFavorite);
 
