@@ -5,6 +5,7 @@ import jwtUtil from "../../../../utils/jwt.util.js";
 import TokenModel from "../../../../models/token.model.js";
 import mongoose from "mongoose";
 import bcryptUtil from "../../../../utils/bcrypt.util.js";
+import UserModel from "../../../../models/user.model.js";
 
 const register = async (req, res) => {
     try {
@@ -44,14 +45,17 @@ const register = async (req, res) => {
 
         let authModelCreateResult;
         let tokenModelCreateResult;
+        let userModelCreateResult;
         await mongoose.connection.transaction(async (session) => {
             authModelCreateResult = await AuthModel.create([data], {session});
             authModelCreateResult = authModelCreateResult[0];
             tokenModelCreateResult = await TokenModel.create([{userId: authModelCreateResult._id}], {session});
             tokenModelCreateResult = tokenModelCreateResult[0];
+            userModelCreateResult = await UserModel.create([{authId: authModelCreateResult._id}], {session});
+            userModelCreateResult = userModelCreateResult[0];
         });
 
-        if (!(authModelCreateResult && tokenModelCreateResult)) {
+        if (!(authModelCreateResult && tokenModelCreateResult && userModelCreateResult)) {
             return res.status(500).json({
                 errors: {
                     auth: 'user not created',

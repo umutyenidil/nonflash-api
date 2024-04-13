@@ -9,18 +9,10 @@ const UserSchema = mongoose.Schema(
             index: true,
             unique: true,
         },
-        firstName: {
-            type: mongoose.Schema.Types.String,
-            required: true,
-        },
-        lastName: {
-            type: mongoose.Schema.Types.String,
-            required: true,
-        },
         favorites: [
             {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Image',
+                ref: 'Post',
             }
         ]
     },
